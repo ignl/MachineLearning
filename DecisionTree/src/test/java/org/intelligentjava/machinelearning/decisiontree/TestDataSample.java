@@ -1,5 +1,6 @@
 package org.intelligentjava.machinelearning.decisiontree;
 
+import org.intelligentjava.machinelearning.decisiontree.data.DataSample;
 import org.intelligentjava.machinelearning.decisiontree.label.Label;
 
 public class TestDataSample implements DataSample {

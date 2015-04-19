@@ -8,15 +8,26 @@ package org.intelligentjava.machinelearning.decisiontree.label;
  */
 public class BooleanLabel extends Label {
     
+    public static final Label TRUE_LABEL = BooleanLabel.newLabel(true);
+
+    public static final Label FALSE_LABEL = BooleanLabel.newLabel(false);
+    
     /** Label. */
     private boolean label;
     
     /**
      * Constructor.
      */
-    public BooleanLabel(boolean label) {
+    private BooleanLabel(boolean label) {
         super();
         this.label = label;
+    }
+    
+    /**
+     * Static factory method.
+     */
+    public static Label newLabel(Boolean label) {
+        return new BooleanLabel(label);
     }
 
     /**
@@ -55,4 +66,12 @@ public class BooleanLabel extends Label {
         return true;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String toString() {
+        return "BooleanLabel [label=" + label + "]";
+    }
+    
 }

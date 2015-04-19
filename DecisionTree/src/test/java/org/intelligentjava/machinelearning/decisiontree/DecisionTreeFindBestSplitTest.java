@@ -1,10 +1,14 @@
 package org.intelligentjava.machinelearning.decisiontree;
 
+import static org.intelligentjava.machinelearning.decisiontree.label.BooleanLabel.FALSE_LABEL;
+import static org.intelligentjava.machinelearning.decisiontree.label.BooleanLabel.TRUE_LABEL;
+
 import java.util.List;
 
+import org.intelligentjava.machinelearning.decisiontree.data.DataSample;
+import org.intelligentjava.machinelearning.decisiontree.data.SimpleDataSample;
 import org.intelligentjava.machinelearning.decisiontree.feature.Feature;
 import org.intelligentjava.machinelearning.decisiontree.feature.SimpleFeature;
-import org.intelligentjava.machinelearning.decisiontree.label.BooleanLabel;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -13,39 +17,42 @@ import com.google.common.collect.Lists;
 public class DecisionTreeFindBestSplitTest {
     
     @Test
-    public void testSimpleSplit() {
+    public void testBooleanSplit() {
         DecisionTree tree = new DecisionTree();
-        List<DataSample> data = Lists.newArrayList();
-        data.add(new TestDataSample(2, new BooleanLabel(true)));
-        data.add(new TestDataSample(3, new BooleanLabel(false)));
-        data.add(new TestDataSample(2, new BooleanLabel(true)));
+        String labelColumnName = "answer";
+        
+        String[] headers = {labelColumnName, "x1", "x2"};
+        List<DataSample> dataSet = Lists.newArrayList();
+        dataSet.add(SimpleDataSample.newSimpleDataSample(labelColumnName, headers, TRUE_LABEL, true, true));
+        dataSet.add(SimpleDataSample.newSimpleDataSample(labelColumnName, headers, FALSE_LABEL, true, false));
+        dataSet.add(SimpleDataSample.newSimpleDataSample(labelColumnName, headers, FALSE_LABEL, false, true));
+        dataSet.add(SimpleDataSample.newSimpleDataSample(labelColumnName, headers, FALSE_LABEL, false, false));
         
         List<Feature> features = Lists.newArrayList();
-        features.add(new SimpleFeature<Integer>("number", 2));
-        features.add(new SimpleFeature<Integer>("number", 3));
+        features.add(SimpleFeature.newFeature("x1", true));
+        features.add(SimpleFeature.newFeature("x2", true));
+        features.add(SimpleFeature.newFeature("x1", false));
+        features.add(SimpleFeature.newFeature("x2", false));
         
-        Feature bestSplit = tree.findBestSplitFeature(data, features);
-        Assert.assertEquals("number = 2", bestSplit.getDefinition());
-    }
+        // test finding split
+        Feature bestSplit = tree.findBestSplitFeature(dataSet, features);
+        Assert.assertEquals("x1 = true", bestSplit.getDefinition());
+        
+        List<List<DataSample>> split = bestSplit.split(dataSet);
+        
+        // test splitting data
+        Assert.assertEquals(TRUE_LABEL, split.get(0).get(0).getValue(labelColumnName));
+        Assert.assertEquals(FALSE_LABEL, split.get(0).get(1).getValue(labelColumnName));
+        Assert.assertEquals(FALSE_LABEL, split.get(1).get(0).getValue(labelColumnName));
+        Assert.assertEquals(FALSE_LABEL, split.get(1).get(1).getValue(labelColumnName));
 
-//    @Test
-//    public void testOddNumbersSplit() {
-//        DecisionTree tree = new DecisionTree();
-//        List<DataSample> data = Lists.newArrayList();
-//        data.add(new TestDataSample(2, new BooleanLabel(true)));
-//        data.add(new TestDataSample(3, new BooleanLabel(false)));
-//        data.add(new TestDataSample(4, new BooleanLabel(true)));
-//        data.add(new TestDataSample(5, new BooleanLabel(false)));
-//        data.add(new TestDataSample(6, new BooleanLabel(true)));
-//        
-//        List<Feature> features = Lists.newArrayList();
-//        features.add(new SimpleFeature<Integer>("number", 2));
-//        features.add(new SimpleFeature<Integer>("number", 3));
-//        features.add(new SimpleFeature<Integer>("number", 4));
-//        features.add(new SimpleFeature<Integer>("number", 5));
-//        
-//        Feature bestSplit = tree.findBestSplitFeature(data, features);
-//        Assert.assertEquals("number = 2", bestSplit.getDefinition());
-//    }
+        // next best split
+        Feature newBestSplit = tree.findBestSplitFeature(split.get(0), features);
+        Assert.assertEquals("x2 = true", newBestSplit.getDefinition());
+
+        List<List<DataSample>> newSplit = newBestSplit.split(split.get(0));
+        Assert.assertEquals(TRUE_LABEL, newSplit.get(0).get(0).getValue(labelColumnName));
+        Assert.assertEquals(FALSE_LABEL, newSplit.get(1).get(0).getValue(labelColumnName));
+    }
 
 }

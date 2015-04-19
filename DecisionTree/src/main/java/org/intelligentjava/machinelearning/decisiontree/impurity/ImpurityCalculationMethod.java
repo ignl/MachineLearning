@@ -2,7 +2,7 @@ package org.intelligentjava.machinelearning.decisiontree.impurity;
 
 import java.util.List;
 
-import org.intelligentjava.machinelearning.decisiontree.DataSample;
+import org.intelligentjava.machinelearning.decisiontree.data.DataSample;
 import org.intelligentjava.machinelearning.decisiontree.label.Label;
 
 /**
@@ -36,6 +36,6 @@ public interface ImpurityCalculationMethod {
      */
     default double getEmpiricalProbability(List<DataSample> splitData, Label positive, Label negative) {
         // TODO cache calculated counts
-        return (double)splitData.parallelStream().filter(d -> d.getLabel().equals(positive)).count() / (double)splitData.parallelStream().filter(d -> d.getLabel().equals(negative)).count();
+        return (double)splitData.parallelStream().filter(d -> d.getLabel().equals(positive)).count() / splitData.size();
     }
 }

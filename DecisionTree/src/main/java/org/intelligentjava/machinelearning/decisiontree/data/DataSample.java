@@ -1,4 +1,4 @@
-package org.intelligentjava.machinelearning.decisiontree;
+package org.intelligentjava.machinelearning.decisiontree.data;
 
 import org.intelligentjava.machinelearning.decisiontree.feature.Feature;
 import org.intelligentjava.machinelearning.decisiontree.label.Label;
@@ -35,5 +35,5 @@ public interface DataSample {
     default boolean has(Feature feature) {
         return feature.belongsTo(this);
     }
-
+    
 }

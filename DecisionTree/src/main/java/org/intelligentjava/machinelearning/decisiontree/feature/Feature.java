@@ -5,7 +5,7 @@ import static java.util.stream.Collectors.partitioningBy;
 import java.util.List;
 import java.util.Map;
 
-import org.intelligentjava.machinelearning.decisiontree.DataSample;
+import org.intelligentjava.machinelearning.decisiontree.data.DataSample;
 
 import com.google.common.collect.Lists;
 
@@ -43,9 +43,13 @@ public interface Feature {
      */
     default List<List<DataSample>> split(List<DataSample> data) {
         List<List<DataSample>> result = Lists.newArrayList();
-        Map<Boolean, List<DataSample>> spilt = data.parallelStream().collect(partitioningBy(dataSample -> belongsTo(dataSample)));
-        result.add(spilt.get(true));
-        result.add(spilt.get(false));
+        Map<Boolean, List<DataSample>> split = data.parallelStream().collect(partitioningBy(dataSample -> belongsTo(dataSample)));
+        if (split.get(true).size() > 0) {
+            result.add(split.get(true));
+        }
+        if (split.get(false).size() > 0) {
+            result.add(split.get(false));
+        }
         return result;
     }
     

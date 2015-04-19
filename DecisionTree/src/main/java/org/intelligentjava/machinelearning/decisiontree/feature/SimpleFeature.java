@@ -1,6 +1,6 @@
 package org.intelligentjava.machinelearning.decisiontree.feature;
 
-import org.intelligentjava.machinelearning.decisiontree.DataSample;
+import org.intelligentjava.machinelearning.decisiontree.data.DataSample;
 
 /**
  * @author Ignas
@@ -19,7 +19,7 @@ public class SimpleFeature<T> implements Feature {
      * @param column
      * @param featureValue
      */
-    public SimpleFeature(String column, T featureValue) {
+    private SimpleFeature(String column, T featureValue) {
         super();
         this.column = column;
         this.featureValue = featureValue;
@@ -36,6 +36,10 @@ public class SimpleFeature<T> implements Feature {
     @Override
     public String getDefinition() {
         return String.format("%s = %s", column, featureValue);
+    }
+    
+    public static <T> Feature newFeature(String column, T featureValue) {
+        return new SimpleFeature<T>(column, featureValue);
     }
 
 }

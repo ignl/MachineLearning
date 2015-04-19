@@ -34,6 +34,14 @@ public class Node {
         children.add(child);
     }
     
+    public List<Node> getChildren() {
+        return children;
+    }
+    
+    public Label getLabel() {
+        return label;
+    }
+
     public boolean isLeaf() {
         return label != null;
     }

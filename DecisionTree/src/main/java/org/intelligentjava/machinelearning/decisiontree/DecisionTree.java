@@ -6,6 +6,7 @@ import static java.util.stream.Collectors.groupingBy;
 import java.util.List;
 import java.util.Map;
 
+import org.intelligentjava.machinelearning.decisiontree.data.DataSample;
 import org.intelligentjava.machinelearning.decisiontree.feature.Feature;
 import org.intelligentjava.machinelearning.decisiontree.impurity.GiniIndexImpurityCalculation;
 import org.intelligentjava.machinelearning.decisiontree.impurity.ImpurityCalculationMethod;
@@ -33,11 +34,11 @@ public class DecisionTree {
     private ImpurityCalculationMethod impurityCalculationMethod = new GiniIndexImpurityCalculation();
 
     /**
-     * When does data is considered homogeneous and node becomes leaf and is labeled. If it is equal 1.0 then absolutely
-     * all data must be of the same label that node would be considered a leaf with same label.
+     * When data is considered homogeneous and node becomes leaf and is labeled. If it is equal 1.0 then absolutely
+     * all data must be of the same label that node would be considered a leaf.
      */
     private double homogenityPercentage = 0.95;
-    
+
     /**
      * Get root.
      */
@@ -68,23 +69,23 @@ public class DecisionTree {
      * @return Node after split. For a first invocation it returns tree root node.
      */
     protected Node growTree(List<DataSample> trainingData, List<Feature> features) {
-        
+
         Label currentNodeLabel = null;
         if ((currentNodeLabel = getLabel(trainingData)) != null) { // if dataset already homogeneous enough (has label assigned) make this node a leaf
             return Node.newLeafNode(LEAF_NODE_NAME, currentNodeLabel);
         }
 
         Feature bestSplit = findBestSplitFeature(trainingData, features); // get best set of literals
-        log.debug("Best split found: {}", bestSplit.toString());
+        log.debug("Best split found: {}", bestSplit.getDefinition());
         List<List<DataSample>> splitData = bestSplit.split(trainingData);
 
-        Node node = Node.newNode(bestSplit.toString());
+        Node node = Node.newNode(bestSplit.getDefinition());
         for (List<DataSample> subsetTrainingData : splitData) { // add children to current node according to split
             if (subsetTrainingData != null && !subsetTrainingData.isEmpty()) {
                 node.addChild(growTree(subsetTrainingData, features));
             } else {
-                node.addChild(Node.newLeafNode(LEAF_NODE_NAME, getLabel(trainingData))); // if subset data is empty add a leaf with
-                                                                         // label calculated from initial data
+                // if subset data is empty add a leaf with label calculated from initial data
+                node.addChild(Node.newLeafNode(LEAF_NODE_NAME, getLabel(trainingData))); 
             }
         }
 
@@ -119,8 +120,7 @@ public class DecisionTree {
             List<List<DataSample>> splitData = feature.split(data);
             // totalSplitImpurity = sum(singleLeafImpurities) / nbOfLeafs
             // in other words splitImpurity is average of leaf impurities
-            double calculatedSplitImpurity = splitData.parallelStream()
-                    .mapToDouble(list -> impurityCalculationMethod.calculateImpurity(list)).average().getAsDouble();
+            double calculatedSplitImpurity = splitData.parallelStream().mapToDouble(list -> impurityCalculationMethod.calculateImpurity(list)).average().getAsDouble();
             if (calculatedSplitImpurity < currentImpurity) {
                 currentImpurity = calculatedSplitImpurity;
                 bestSplitFeature = feature;

@@ -24,10 +24,11 @@ public class BooleanLabel extends Label {
     }
     
     /**
-     * Static factory method.
+     * {@inheritDoc}
      */
-    public static Label newLabel(Boolean label) {
-        return new BooleanLabel(label);
+    @Override
+    public String getPrintValue() {
+        return label ? "1" : "0";
     }
 
     /**
@@ -36,6 +37,13 @@ public class BooleanLabel extends Label {
     @Override
     public String getName() {
         return String.valueOf(label);
+    }
+    
+    /**
+     * Static factory method.
+     */
+    public static Label newLabel(Boolean label) {
+        return new BooleanLabel(label);
     }
 
     /**
@@ -73,5 +81,5 @@ public class BooleanLabel extends Label {
     public String toString() {
         return "BooleanLabel [label=" + label + "]";
     }
-    
+
 }

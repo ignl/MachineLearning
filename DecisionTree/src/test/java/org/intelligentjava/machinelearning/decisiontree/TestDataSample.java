@@ -1,5 +1,7 @@
 package org.intelligentjava.machinelearning.decisiontree;
 
+import java.util.Optional;
+
 import org.intelligentjava.machinelearning.decisiontree.data.DataSample;
 import org.intelligentjava.machinelearning.decisiontree.label.Label;
 
@@ -16,8 +18,8 @@ public class TestDataSample implements DataSample {
     }
 
     @Override
-    public Object getValue(String column) {
-        return value;
+    public Optional<Object> getValue(String column) {
+        return Optional.of(value);
     }
 
     @Override

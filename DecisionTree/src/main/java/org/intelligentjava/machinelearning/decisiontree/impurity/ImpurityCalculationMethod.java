@@ -11,9 +11,12 @@ import org.intelligentjava.machinelearning.decisiontree.label.Label;
  * should return high value in the first case and low value in the second. That means that during training we will
  * prefer second split as that will provide most information. Most popular methods are entropy and gini index.
  * 
+ * Annotated as functional interface to allow lambda usage.
+ * 
  * @author Ignas
  *
  */
+@FunctionalInterface
 public interface ImpurityCalculationMethod {
 
     /**

@@ -1,33 +1,38 @@
 package org.intelligentjava.machinelearning.decisiontree;
 
-import java.util.ArrayList;
 import java.util.List;
 
+import org.intelligentjava.machinelearning.decisiontree.feature.Feature;
 import org.intelligentjava.machinelearning.decisiontree.label.Label;
+
+import com.google.common.collect.Lists;
 
 public class Node {
     
-    private String name;
+    private static final String LEAF_NODE_NAME = "Leaf";
+
+    /** Node's feature used to split it further. */
+    private Feature feature;
     
     private Label label;
     
-    private List<Node> children = new ArrayList<>();
+    private List<Node> children = Lists.newArrayList();
     
-    private Node(String name) {
-        this.name = name;
+    private Node(Feature feature) {
+        this.feature = feature;
     }
 
-    private Node(String name, Label label) {
+    private Node(Feature feature, Label label) {
         this.label = label;
-        this.name = name;
+        this.feature = feature;
     }
 
-    public static Node newNode(String name) {
-        return new Node(name);
+    public static Node newNode(Feature feature) {
+        return new Node(feature);
     }
 
-    public static Node newLeafNode(String name, Label label) {
-        return new Node(name, label);
+    public static Node newLeafNode(Label label) {
+        return new Node(null, label);
     }
     
     public void addChild(Node child) {
@@ -46,8 +51,12 @@ public class Node {
         return label != null;
     }
 
+    public Feature getFeature() {
+        return feature;
+    }
+
     public String getName() {
-        return name;
+        return feature != null ? feature.toString() : LEAF_NODE_NAME;
     }
     
 }

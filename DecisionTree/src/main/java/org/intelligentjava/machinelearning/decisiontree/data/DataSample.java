@@ -1,5 +1,7 @@
 package org.intelligentjava.machinelearning.decisiontree.data;
 
+import java.util.Optional;
+
 import org.intelligentjava.machinelearning.decisiontree.feature.Feature;
 import org.intelligentjava.machinelearning.decisiontree.label.Label;
 
@@ -16,7 +18,7 @@ public interface DataSample {
      * 
      * @return Data value.
      */
-    Object getValue(String column);
+    Optional<Object> getValue(String column);
     
     /**
      * Assigned label of training data.

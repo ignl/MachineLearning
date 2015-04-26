@@ -2,6 +2,7 @@ package org.intelligentjava.machinelearning.decisiontree.data;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 import org.intelligentjava.machinelearning.decisiontree.label.Label;
 
@@ -18,25 +19,20 @@ public class SimpleDataSample implements DataSample {
     
     private Map<String, Object> values = Maps.newHashMap();
     
+    /** Column name which contains data labels. */
     private String labelColumn;
     
-    private SimpleDataSample(String labelColumn, Map<String, Object> values) {
+    private SimpleDataSample(String labelColumn, String[] header, Object... dataValues) {
         super();
         this.labelColumn = labelColumn;
-        this.values = values;
-    }
-
-    private SimpleDataSample(String labelColumnName, String[] header, Object... dataValues) {
-        super();
-        this.labelColumn = labelColumnName;
         for (int i = 0; i < header.length; i++) {
             this.values.put(header[i], dataValues[i]);
         }
     }
 
     @Override
-    public Object getValue(String column) {
-        return values.get(column);
+    public Optional<Object> getValue(String column) {
+        return Optional.ofNullable(values.get(column));
     }
     
     @Override
@@ -44,13 +40,23 @@ public class SimpleDataSample implements DataSample {
         return (Label)values.get(labelColumn);
     }
 
-    public static SimpleDataSample newSimpleDataSample(String labelColumnName, Map<String, Object> values) {
-        return new SimpleDataSample(labelColumnName, values);
+    /**
+     * Create data sample without labels which is used on trained tree.
+     */
+    public static SimpleDataSample newClassificationDataSample(String[] header, Object... values) {
+        Preconditions.checkArgument(header.length == values.length);
+        return new SimpleDataSample(null, header, values);
     }
 
-    public static SimpleDataSample newSimpleDataSample(String labelColumnName, String[] header, Object... values) {
+    /**
+     * @param labelColumn
+     * @param header
+     * @param values
+     * @return
+     */
+    public static SimpleDataSample newSimpleDataSample(String labelColumn, String[] header, Object... values) {
         Preconditions.checkArgument(header.length == values.length);
-        return new SimpleDataSample(labelColumnName, header, values);
+        return new SimpleDataSample(labelColumn, header, values);
     }
 
     /**

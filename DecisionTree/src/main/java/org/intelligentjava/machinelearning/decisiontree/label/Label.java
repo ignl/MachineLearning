@@ -9,6 +9,13 @@ package org.intelligentjava.machinelearning.decisiontree.label;
 public abstract class Label {
     
     /**
+     * Label value used to print to predictions output.
+     * 
+     * @return Print label
+     */
+    public abstract String getPrintValue();
+    
+    /**
      * @return Label name
      */
     public abstract String getName();

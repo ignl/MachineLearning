@@ -38,6 +38,33 @@ public class Main {
         List<DataSample> trainingData = readData(true);
         DecisionTree tree = new DecisionTree();
         
+        List<Feature> features = getFeatures();
+        
+        tree.train(trainingData, features);
+        
+        // print tree after training
+        tree.printTree();
+        
+        // read test data
+        List<DataSample> testingData = readData(false);
+        List<String> predictions = Lists.newArrayList();
+        // classify all test data
+        for (DataSample dataSample : testingData) {
+            predictions.add(dataSample.getValue("PassengerId").get() + "," + tree.classify(dataSample).getPrintValue());
+        }
+        
+        // write predictions to file
+        FileWriter fileWriter = new FileWriter(new File("predictions.csv"));
+        fileWriter.append("PassengerId,Survived").append("\n");
+        for (String prediction : predictions) {
+            fileWriter.append(prediction).append("\n");
+        }
+        fileWriter.flush();
+        fileWriter.close();
+        
+    }
+    
+    private static List<Feature> getFeatures() {
         Feature firstClassPassenger = newFeature("Pclass", 1);
         Feature secondClassPassenger = newFeature("Pclass", 2);
         Feature thirdClassPassenger = newFeature("Pclass", 3);
@@ -68,30 +95,10 @@ public class Main {
         Feature embarkedS = newFeature("Embarked", "S");
         Feature embarkedQ = newFeature("Embarked", "Q");
         
-        List<Feature> features = Arrays.asList(firstClassPassenger, secondClassPassenger, thirdClassPassenger, isMale, isFemale, hasSiblings, moreThan2Siblings,
+        return Arrays.asList(firstClassPassenger, secondClassPassenger, thirdClassPassenger, isMale, isFemale, hasSiblings, moreThan2Siblings,
                 hasParentsChildren, moreThan2Children, ageLessThan10, ageBewteen10And30, ageBewteen30And50, ageBewteen50And60, ageBewteen50And60, ageMoreThan60,
                 fareMoreThan7, fareBetween7And15, fareBetween15And23, fareBetween23And31, fareBetween31And71, fareMoreThan71, fareMoreThan71, cabinA, cabinB, cabinC,
                 cabinD, cabinE, cabinF, embarkedC, embarkedS, embarkedQ);
-        
-        tree.train(trainingData, features);
-        
-        tree.printTree();
-        
-        List<DataSample> testingData = readData(false);
-        List<String> predictions = Lists.newArrayList();
-        // classify all test data
-        for (DataSample dataSample : testingData) {
-            predictions.add(dataSample.getValue("PassengerId").get() + "," + tree.classify(dataSample).getPrintValue());
-        }
-        
-        FileWriter fileWriter = new FileWriter(new File("predictions.csv"));
-        fileWriter.append("PassengerId,Survived").append("\n");
-        for (String prediction : predictions) {
-            fileWriter.append(prediction).append("\n");
-        }
-        fileWriter.flush();
-        fileWriter.close();
-        
     }
     
     private static List<DataSample> readData(boolean training) throws IOException {

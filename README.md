@@ -1,5 +1,5 @@
 # MachineLearning
-My machine learning algortihms imlementations. Currently only unfinished linear regression and logistic regression. Also added decision tree.
+My machine learning algortihms implementations. Currently decision tree, and linear/logistic regression.
 
 
 Post about decision tree implementation:
